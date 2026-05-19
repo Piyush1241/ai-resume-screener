@@ -22,4 +22,4 @@ Thumbs.db
 client/.vite/
 
 # Coverage
-coverage/
+coverage/.DS_Store
