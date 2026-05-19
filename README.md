@@ -33,6 +33,46 @@ An intelligent full-stack web application that uses AI to automatically screen a
 
 ## 🏗 Architecture
 
+```mermaid
+flowchart TD
+    User(["👤 User (browser)"])
+
+    subgraph Vercel ["☁️ Frontend — Vercel"]
+        React["React (Vite)\nLogin · Dashboard · Jobs · Candidates"]
+        Tailwind["Tailwind CSS\nGlassmorphism UI"]
+        Axios["Axios + React Router\nAPI calls · navigation"]
+    end
+
+    subgraph Render ["🖥 Backend — Render (Node.js / Express)"]
+        Auth["Auth middleware\nJWT · httpOnly cookie · roles"]
+        Routes["Express routes\n/auth · /jobs · /resumes · /score"]
+        Multer["Multer + pdf-parse\nPDF upload · text extraction"]
+    end
+
+    subgraph Databases ["🗄 Databases"]
+        PG[("PostgreSQL — Neon\nscreener_users\nauth · roles")]
+        Mongo[("MongoDB — Atlas\nJobs · Resumes\nAI scores")]
+    end
+
+    Groq["⚡ Groq API\nLLaMA 3.3 70B\nResume scoring"]
+
+    User -->|HTTPS| Vercel
+    Vercel -->|REST / cookie| Render
+    Auth --> PG
+    Routes --> Mongo
+    Multer --> Mongo
+    Routes --> Groq
+```
+
+**Data flow:**
+1. User logs in → JWT stored in `httpOnly` cookie
+2. Recruiter creates a job with required skills
+3. PDF resume uploaded → text extracted with `pdf-parse`
+4. Raw text + job description sent to Groq (LLaMA 3.3)
+5. AI returns structured JSON: match %, skills, red flags, recommendation
+6. Results stored in MongoDB and displayed ranked by score
+
+**Folder structure:**
 ```
 ai-resume-screener/
 ├── client/                  # React frontend (Vite)
@@ -50,14 +90,6 @@ ai-resume-screener/
     ├── routes/              # API route definitions
     └── server.js            # Entry point
 ```
-
-**Data flow:**
-1. User logs in → JWT stored in `httpOnly` cookie
-2. Recruiter creates a job with required skills
-3. PDF resume uploaded → text extracted with `pdf-parse`
-4. Raw text + job description sent to Groq (LLaMA 3.3)
-5. AI returns structured JSON: match %, skills, red flags, recommendation
-6. Results stored in MongoDB and displayed ranked by score
 
 ---
 
