@@ -24,47 +24,56 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)' }}>
+
+      {/* Glowing orbs */}
+      <div className="absolute top-[-100px] left-[-100px] w-96 h-96 rounded-full opacity-30 blur-3xl"
+        style={{ background: 'radial-gradient(circle, #7c3aed, transparent)' }} />
+      <div className="absolute bottom-[-100px] right-[-100px] w-96 h-96 rounded-full opacity-30 blur-3xl"
+        style={{ background: 'radial-gradient(circle, #2563eb, transparent)' }} />
+
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white">AI Resume Screener</h1>
-          <p className="text-gray-400 mt-2">Sign in to your account</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 0 40px rgba(124,58,237,0.5)' }}>
+            <span className="text-2xl">🤖</span>
+          </div>
+          <h1 className="text-4xl font-bold text-white tracking-tight">AI Resume Screener</h1>
+          <p className="text-purple-300 mt-2">Sign in to your workspace</p>
         </div>
-        <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800">
+
+        <div className="rounded-2xl p-8 border border-white/10"
+          style={{ background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(20px)', boxShadow: '0 25px 50px rgba(0,0,0,0.4)' }}>
+
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 mb-6 text-sm">
+            <div className="rounded-xl p-3 mb-6 text-sm text-red-300 border border-red-500/30"
+              style={{ background: 'rgba(239,68,68,0.1)' }}>
               {error}
             </div>
           )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-              <input
-                type="email"
-                value={form.email}
+              <label className="block text-sm font-medium text-purple-200 mb-2">Email</label>
+              <input type="email" value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-                placeholder="you@example.com"
-                required
-              />
+                className="w-full rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none border border-white/10 focus:border-purple-500 transition-colors"
+                style={{ background: 'rgba(255,255,255,0.07)' }}
+                placeholder="you@example.com" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
-              <input
-                type="password"
-                value={form.password}
+              <label className="block text-sm font-medium text-purple-200 mb-2">Password</label>
+              <input type="password" value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-                placeholder="••••••••"
-                required
-              />
+                className="w-full rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none border border-white/10 focus:border-purple-500 transition-colors"
+                style={{ background: 'rgba(255,255,255,0.07)' }}
+                placeholder="••••••••" required />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <button type="submit" disabled={loading}
+              className="w-full py-3 rounded-xl font-semibold text-white transition-all disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 0 30px rgba(124,58,237,0.4)' }}>
+              {loading ? 'Signing in...' : 'Sign In →'}
             </button>
           </form>
         </div>
