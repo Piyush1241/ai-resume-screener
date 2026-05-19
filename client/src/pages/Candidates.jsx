@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/immutability */
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -11,17 +9,17 @@ const scoreColor = (pct) => {
   return 'text-red-400'
 }
 
-const scoreBg = (pct) => {
-  if (pct >= 70) return 'bg-green-500/10 border-green-500/20'
-  if (pct >= 40) return 'bg-yellow-500/10 border-yellow-500/20'
-  return 'bg-red-500/10 border-red-500/20'
+const scoreBorder = (pct) => {
+  if (pct >= 70) return 'border-green-500/30'
+  if (pct >= 40) return 'border-yellow-500/30'
+  return 'border-red-500/30'
 }
 
-const badgeColor = (rec) => {
-  if (rec === 'Strong Yes') return 'bg-green-500/20 text-green-400 border-green-500/30'
-  if (rec === 'Yes') return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-  if (rec === 'Maybe') return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-  return 'bg-red-500/20 text-red-400 border-red-500/30'
+const badgeStyle = (rec) => {
+  if (rec === 'Strong Yes') return 'text-green-400 border-green-500/30 bg-green-500/10'
+  if (rec === 'Yes') return 'text-blue-400 border-blue-500/30 bg-blue-500/10'
+  if (rec === 'Maybe') return 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
+  return 'text-red-400 border-red-500/30 bg-red-500/10'
 }
 
 export default function Candidates() {
@@ -35,10 +33,6 @@ export default function Candidates() {
   const [selected, setSelected] = useState(null)
   const [form, setForm] = useState({ candidateName: '', candidateEmail: '', file: null })
 
-  useEffect(() => {
-    fetchData()
-  }, [jobId])
-
   const fetchData = async () => {
     const [jobRes, resumesRes] = await Promise.all([
       axios.get(`/api/jobs/${jobId}`),
@@ -48,6 +42,8 @@ export default function Candidates() {
     setResumes(resumesRes.data)
     setLoading(false)
   }
+
+  useEffect(() => { fetchData() }, [jobId])
 
   const handleUpload = async (e) => {
     e.preventDefault()
@@ -61,8 +57,6 @@ export default function Candidates() {
       fd.append('candidateEmail', form.candidateEmail)
       const r = await axios.post('/api/resumes/upload', fd)
       setForm({ candidateName: '', candidateEmail: '', file: null })
-
-      // Auto-score after upload
       setScoring(r.data.resumeId)
       await axios.post(`/api/score/resume/${r.data.resumeId}`)
       setScoring(null)
@@ -74,141 +68,147 @@ export default function Candidates() {
     }
   }
 
-  if (loading) return (
-    <Layout>
-      <div className="text-gray-400">Loading...</div>
-    </Layout>
-  )
+  const inputClass = "w-full rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none border border-white/10 focus:border-purple-500 transition-colors"
+  const inputStyle = { background: 'rgba(255,255,255,0.07)' }
+
+  if (loading) return <Layout><div className="text-white/40">Loading...</div></Layout>
 
   return (
     <Layout>
-      <div className="flex items-center gap-3 mb-2">
-        <button onClick={() => navigate('/jobs')} className="text-gray-500 hover:text-white transition-colors text-sm">
+      <div className="flex items-center gap-2 mb-2">
+        <button onClick={() => navigate('/jobs')}
+          className="text-white/30 hover:text-white transition-colors text-sm">
           ← Jobs
         </button>
       </div>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">{job?.title}</h1>
-        <p className="text-gray-400 mt-1">{job?.experienceLevel} · {job?.requiredSkills?.join(', ')}</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight">{job?.title}</h1>
+        <div className="flex items-center gap-2 mt-2">
+          <span className="text-xs px-2 py-1 rounded-full border border-purple-500/30 text-purple-300"
+            style={{ background: 'rgba(124,58,237,0.1)' }}>
+            {job?.experienceLevel}
+          </span>
+          <span className="text-white/30 text-sm">{job?.requiredSkills?.join(', ')}</span>
+        </div>
       </div>
 
       {/* Upload Form */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-        <h2 className="text-lg font-semibold mb-4">Upload Resume</h2>
+      <div className="rounded-2xl p-6 mb-8 border border-purple-500/20"
+        style={{ background: 'rgba(124,58,237,0.05)', backdropFilter: 'blur(10px)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">Upload Resume</h2>
         <form onSubmit={handleUpload} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Candidate Name</label>
-              <input
-                value={form.candidateName}
+              <label className="block text-sm text-purple-200 mb-2">Candidate Name</label>
+              <input value={form.candidateName}
                 onChange={e => setForm({ ...form, candidateName: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                placeholder="John Doe" required
-              />
+                className={inputClass} style={inputStyle}
+                placeholder="John Doe" required />
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Candidate Email</label>
-              <input
-                type="email"
-                value={form.candidateEmail}
+              <label className="block text-sm text-purple-200 mb-2">Candidate Email</label>
+              <input type="email" value={form.candidateEmail}
                 onChange={e => setForm({ ...form, candidateEmail: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                placeholder="john@example.com"
-              />
+                className={inputClass} style={inputStyle}
+                placeholder="john@example.com" />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-2">Resume PDF</label>
-            <input
-              type="file"
-              accept=".pdf"
+            <label className="block text-sm text-purple-200 mb-2">Resume PDF</label>
+            <input type="file" accept=".pdf"
               onChange={e => setForm({ ...form, file: e.target.files[0] })}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-300 focus:outline-none focus:border-blue-500 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-500"
-              required
-            />
+              className="w-full rounded-xl px-4 py-3 text-white/60 border border-white/10 focus:outline-none focus:border-purple-500 transition-colors file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:text-white cursor-pointer"
+              style={{ background: 'rgba(255,255,255,0.07)', ['--file-bg']: 'rgba(124,58,237,0.5)' }}
+              required />
           </div>
-          <button
-            type="submit"
-            disabled={uploading}
-            className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-colors"
-          >
-            {uploading ? 'Uploading & Scoring...' : 'Upload & Score'}
+          <button type="submit" disabled={uploading}
+            className="px-6 py-3 rounded-xl font-medium text-white transition-all disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 0 30px rgba(124,58,237,0.3)' }}>
+            {uploading ? '⏳ Uploading & Scoring...' : '🚀 Upload & Score'}
           </button>
         </form>
-      </div>
-
-      {/* Candidates List */}
+      </div>{/* Candidates List */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">
-          Candidates <span className="text-gray-500 font-normal text-sm">({resumes.length})</span>
+        <h2 className="text-lg font-semibold text-white mb-4">
+          Candidates <span className="text-white/30 font-normal text-sm">({resumes.length})</span>
         </h2>
 
         {resumes.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">No resumes uploaded yet.</div>
+          <div className="text-center py-16">
+            <div className="text-5xl mb-4">📄</div>
+            <p className="text-white/40">No resumes uploaded yet.</p>
+          </div>
         ) : (
           <div className="space-y-3">
             {resumes.map((resume, i) => (
               <div key={resume._id}>
-                <div
-                  onClick={() => setSelected(selected === resume._id ? null : resume._id)}
-                  className="bg-gray-900 border border-gray-800 rounded-xl p-5 cursor-pointer hover:border-gray-600 transition-colors"
-                >
+                <div onClick={() => setSelected(selected === resume._id ? null : resume._id)}
+                  className={`rounded-2xl p-5 border cursor-pointer transition-all hover:border-purple-500/30 ${selected === resume._id ? 'border-purple-500/40 rounded-b-none' : 'border-white/10'}`}
+                  style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)' }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <span className="text-gray-600 text-sm font-mono w-6">#{i + 1}</span>
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white/40 border border-white/10"
+                        style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        {i + 1}
+                      </div>
                       <div>
                         <h3 className="font-semibold text-white">{resume.candidateName}</h3>
-                        <p className="text-gray-500 text-sm">{resume.candidateEmail || resume.fileName}</p>
+                        <p className="text-white/30 text-sm">{resume.candidateEmail || resume.fileName}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       {scoring === resume._id && (
-                        <span className="text-yellow-400 text-sm animate-pulse">Scoring...</span>
+                        <span className="text-purple-400 text-sm animate-pulse">✨ Scoring...</span>
                       )}
                       {resume.aiScore ? (
                         <>
                           <span className={`text-2xl font-bold ${scoreColor(resume.aiScore.match_percentage)}`}>
                             {resume.aiScore.match_percentage}%
                           </span>
-                          <span className={`text-xs border px-2 py-1 rounded-full ${badgeColor(resume.aiScore.recommendation)}`}>
+                          <span className={`text-xs px-2 py-1 rounded-full border ${badgeStyle(resume.aiScore.recommendation)}`}>
                             {resume.aiScore.recommendation}
                           </span>
+                          <span className="text-white/20 text-sm">{selected === resume._id ? '▲' : '▼'}</span>
                         </>
                       ) : (
-                        <span className="text-gray-600 text-sm">Not scored</span>
+                        <span className="text-white/20 text-sm">Not scored</span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Expanded Detail */}
                 {selected === resume._id && resume.aiScore && (
-                  <div className={`border border-t-0 rounded-b-xl p-5 ${scoreBg(resume.aiScore.match_percentage)}`}>
-                    <p className="text-gray-300 text-sm mb-4">{resume.aiScore.experience_summary}</p>
+                  <div className={`rounded-b-2xl border border-t-0 p-5 ${scoreBorder(resume.aiScore.match_percentage)}`}
+                    style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
+                    <p className="text-white/60 text-sm mb-5">{resume.aiScore.experience_summary}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Matched Skills</p>
+                        <p className="text-xs text-white/30 uppercase tracking-wider mb-2">✅ Matched Skills</p>
                         <div className="flex flex-wrap gap-1">
                           {resume.aiScore.matched_skills.map(s => (
-                            <span key={s} className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full">{s}</span>
+                            <span key={s} className="text-xs px-2 py-0.5 rounded-full border border-green-500/30 text-green-400"
+                              style={{ background: 'rgba(34,197,94,0.1)' }}>{s}</span>
                           ))}
-                          {resume.aiScore.matched_skills.length === 0 && <span className="text-gray-600 text-xs">None</span>}
+                          {resume.aiScore.matched_skills.length === 0 &&
+                            <span className="text-white/20 text-xs">None</span>}
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Missing Skills</p>
+                        <p className="text-xs text-white/30 uppercase tracking-wider mb-2">❌ Missing Skills</p>
                         <div className="flex flex-wrap gap-1">
                           {resume.aiScore.missing_skills.map(s => (
-                            <span key={s} className="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">{s}</span>
+                            <span key={s} className="text-xs px-2 py-0.5 rounded-full border border-red-500/30 text-red-400"
+                              style={{ background: 'rgba(239,68,68,0.1)' }}>{s}</span>
                           ))}
-                          {resume.aiScore.missing_skills.length === 0 && <span className="text-gray-600 text-xs">None</span>}
+                          {resume.aiScore.missing_skills.length === 0 &&
+                            <span className="text-white/20 text-xs">None</span>}
                         </div>
                       </div>
                     </div>
                     {resume.aiScore.red_flags.length > 0 && (
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Red Flags</p>
+                        <p className="text-xs text-white/30 uppercase tracking-wider mb-2">⚠️ Red Flags</p>
                         <ul className="space-y-1">
                           {resume.aiScore.red_flags.map((f, i) => (
                             <li key={i} className="text-red-400 text-sm flex items-start gap-2">
