@@ -24,6 +24,7 @@ export default function Layout({ children }) {
   )
 
   const devSelectValue = devUser?._id || DEV_USERS[0]._id
+console.log('Layout render — devUser:', devUser?.name, '| devSelectValue:', devSelectValue)
 
   return (
     <div className="min-h-screen text-white relative overflow-x-hidden"
@@ -53,7 +54,10 @@ export default function Layout({ children }) {
             {import.meta.env.DEV && (
               <select
                 value={devSelectValue}
-                onChange={e => switchUser(DEV_USERS.find(u => u._id === e.target.value))}
+                onChange={e => {
+                  console.log('onChange fired, selected _id:', e.target.value)
+                  switchUser(DEV_USERS.find(u => u._id === e.target.value))
+                }}
                 className="text-xs rounded-lg px-2 py-1 text-white/70 border border-white/10 focus:outline-none cursor-pointer"
                 style={{ background: 'rgba(255,255,255,0.07)' }}
                 title="Dev: switch user"
