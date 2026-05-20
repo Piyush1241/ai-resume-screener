@@ -2,6 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([])
@@ -12,6 +13,8 @@ export default function Jobs() {
     title: '', description: '', requiredSkills: [], experienceLevel: 'junior'
   })
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
 
   const fetchJobs = async () => {
     const r = await axios.get('/api/jobs')
@@ -55,14 +58,16 @@ export default function Jobs() {
           <h1 className="text-3xl font-bold text-white tracking-tight">Jobs</h1>
           <p className="text-white/40 mt-1">Manage your job listings</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)}
-          className="px-5 py-2.5 rounded-xl font-medium text-white transition-all"
-          style={showForm ? { background: 'rgba(255,255,255,0.1)' } : { background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 0 30px rgba(124,58,237,0.3)' }}>
-          {showForm ? '✕ Cancel' : '+ New Job'}
-        </button>
+        {isAdmin && (
+          <button onClick={() => setShowForm(!showForm)}
+            className="px-5 py-2.5 rounded-xl font-medium text-white transition-all"
+            style={showForm ? { background: 'rgba(255,255,255,0.1)' } : { background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 0 30px rgba(124,58,237,0.3)' }}>
+            {showForm ? '✕ Cancel' : '+ New Job'}
+          </button>
+        )}
       </div>
 
-      {showForm && (
+      {isAdmin && showForm && (
         <div className="rounded-2xl p-6 mb-8 border border-purple-500/20"
           style={{ background: 'rgba(124,58,237,0.05)', backdropFilter: 'blur(10px)' }}>
           <h2 className="text-lg font-semibold text-white mb-6">Create New Job</h2>
@@ -126,7 +131,9 @@ export default function Jobs() {
             </button>
           </form>
         </div>
-      )}{loading ? (
+      )}
+
+      {loading ? (
         <div className="text-white/40">Loading...</div>
       ) : jobs.length === 0 ? (
         <div className="text-center py-24">
@@ -162,17 +169,19 @@ export default function Jobs() {
                   onClick={() => navigate(`/jobs/${job._id}/candidates`)}>
                   View candidates →
                 </span>
-                <button
-                  onClick={async () => {
-                    if (confirm('Delete this job?')) {
-                      await axios.delete(`/api/jobs/${job._id}`)
-                      fetchJobs()
-                    }
-                  }}
-                  className="text-sm px-3 py-1 rounded-lg text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 transition-all"
-                  style={{ background: 'rgba(239,68,68,0.05)' }}>
-                  Delete
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={async () => {
+                      if (confirm('Delete this job?')) {
+                        await axios.delete(`/api/jobs/${job._id}`)
+                        fetchJobs()
+                      }
+                    }}
+                    className="text-sm px-3 py-1 rounded-lg text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 transition-all"
+                    style={{ background: 'rgba(239,68,68,0.05)' }}>
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}
