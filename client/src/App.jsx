@@ -13,11 +13,11 @@ function PrivateRoute({ children }) {
 export default function App() {
   return (
     <Routes>
+      <Route path="*" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/jobs" element={<PrivateRoute><Jobs /></PrivateRoute>} />
       <Route path="/jobs/:jobId/candidates" element={<PrivateRoute><Candidates /></PrivateRoute>} />
-      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
 }
