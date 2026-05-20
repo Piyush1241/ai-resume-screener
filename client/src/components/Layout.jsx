@@ -54,7 +54,6 @@ export default function Layout({ children }) {
               <select
                 value={devSelectValue}
                 onChange={e => {
-                  console.log('onChange fired, selected _id:', e.target.value)
                   switchUser(DEV_USERS.find(u => u._id === e.target.value))
                 }}
                 className="text-xs rounded-lg px-2 py-1 text-white/70 border border-white/10 focus:outline-none cursor-pointer"
