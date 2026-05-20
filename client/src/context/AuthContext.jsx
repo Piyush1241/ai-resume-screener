@@ -19,11 +19,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios.get('/api/auth/me')
-      .then(r => setRealUser(r.data.user))
-      .catch(() => setRealUser(null))
-      .finally(() => setLoading(false))
-  }, [])
+  axios.get('/api/auth/me')
+    .then(r => setRealUser(r.data.user))
+    .catch(() => setRealUser(null))
+    .finally(() => setLoading(false))
+}, [])
 
   const user = devUser ?? realUser
 
