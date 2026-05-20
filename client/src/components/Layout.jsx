@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Layout({ children }) {
-  const { user, logout } = useAuth()
+  const { user, logout, switchUser, DEV_USERS } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -48,6 +48,21 @@ export default function Layout({ children }) {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {import.meta.env.DEV && (
+              <select
+                value={user?._id || ''}
+                onChange={e => switchUser(DEV_USERS.find(u => u._id === e.target.value))}
+                className="text-xs rounded-lg px-2 py-1 text-white/70 border border-white/10 focus:outline-none cursor-pointer"
+                style={{ background: 'rgba(255,255,255,0.07)' }}
+                title="Dev: switch user"
+              >
+                {DEV_USERS.map(u => (
+                  <option key={u._id} value={u._id} style={{ background: '#1a1535' }}>
+                    {u.name} · {u.role}
+                  </option>
+                ))}
+              </select>
+            )}
             <div className="text-sm px-3 py-1 rounded-full border border-white/10 text-white/60"
               style={{ background: 'rgba(255,255,255,0.05)' }}>
               {user?.name} · <span className="text-purple-400">{user?.role}</span>
