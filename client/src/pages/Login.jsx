@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-  const { login } = useAuth()
+  const { login, user } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  if (user) return <Navigate to="/" replace />
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -27,7 +29,6 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)' }}>
 
-      {/* Glowing orbs */}
       <div className="absolute top-[-100px] left-[-100px] w-96 h-96 rounded-full opacity-30 blur-3xl"
         style={{ background: 'radial-gradient(circle, #7c3aed, transparent)' }} />
       <div className="absolute bottom-[-100px] right-[-100px] w-96 h-96 rounded-full opacity-30 blur-3xl"
