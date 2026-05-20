@@ -6,9 +6,9 @@ axios.defaults.baseURL = import.meta.env.VITE_API_URL || ''
 axios.defaults.withCredentials = true
 
 const DEV_USERS = [
-  { _id: 'dev-admin', name: 'Piyush', email: 'piyush@dev.com', role: 'admin' },
-  { _id: 'dev-candidate-1', name: 'Priya Sharma', email: 'priya@dev.com', role: 'candidate' },
-  { _id: 'dev-candidate-2', name: 'Aarav Mehta', email: 'aarav@dev.com', role: 'candidate' },
+  { _id: 'dev-candidate-1', name: 'User1', email: 'u1@dev.com', role: 'candidate' },
+  { _id: 'dev-candidate-2', name: 'User2', email: 'u2@dev.com', role: 'candidate' },
+  { _id: 'dev-admin', name: 'Piyush', email: 'piyush@admin.com', role: 'admin' },
 ]
 
 const AuthContext = createContext(null)
