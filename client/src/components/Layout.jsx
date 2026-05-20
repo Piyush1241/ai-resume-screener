@@ -23,6 +23,8 @@ export default function Layout({ children }) {
     </Link>
   )
 
+  const devSelectValue = DEV_USERS.find(u => u._id === user?._id)?._id || DEV_USERS[0]._id
+
   return (
     <div className="min-h-screen text-white relative overflow-x-hidden"
       style={{ background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)' }}>
@@ -50,7 +52,7 @@ export default function Layout({ children }) {
           <div className="flex items-center gap-4">
             {import.meta.env.DEV && (
               <select
-                value={user?._id || ''}
+                value={devSelectValue}
                 onChange={e => switchUser(DEV_USERS.find(u => u._id === e.target.value))}
                 className="text-xs rounded-lg px-2 py-1 text-white/70 border border-white/10 focus:outline-none cursor-pointer"
                 style={{ background: 'rgba(255,255,255,0.07)' }}
