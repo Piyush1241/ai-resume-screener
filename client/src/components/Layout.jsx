@@ -59,7 +59,7 @@ console.log('Layout render — devUser:', devUser?.name, '| devSelectValue:', de
                   switchUser(DEV_USERS.find(u => u._id === e.target.value))
                 }}
                 className="text-xs rounded-lg px-2 py-1 text-white/70 border border-white/10 focus:outline-none cursor-pointer"
-                style={{ background: 'rgba(255,255,255,0.07)' }}
+                style={{ background: 'rgba(255,255,255,0.07)', position: 'relative', zIndex: 60 }}
                 title="Dev: switch user"
               >
                 {DEV_USERS.map(u => (
