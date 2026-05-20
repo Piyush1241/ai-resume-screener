@@ -24,7 +24,6 @@ export default function Layout({ children }) {
   )
 
   const devSelectValue = devUser?._id || DEV_USERS[0]._id
-console.log('Layout render — devUser:', devUser?.name, '| devSelectValue:', devSelectValue)
 
   return (
     <div className="min-h-screen text-white relative overflow-x-hidden"
