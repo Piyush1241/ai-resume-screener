@@ -26,7 +26,6 @@ export function AuthProvider({ children }) {
   }, [])
 
   const user = devUser ?? realUser
-console.log('user in context:', user?.name, user?.role, '| devUser:', devUser?.name, '| realUser:', realUser?.name)
 
   const login = async (email, password) => {
     const r = await axios.post('/api/auth/login', { email, password })
