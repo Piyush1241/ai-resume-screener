@@ -45,7 +45,7 @@ console.log('user in context:', user?.name, user?.role, '| devUser:', devUser?.n
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">Loading...</div>
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, switchUser, DEV_USERS }}>
+    <AuthContext.Provider value={{ user, login, logout, switchUser, DEV_USERS, devUser }}>
       {children}
     </AuthContext.Provider>
   )

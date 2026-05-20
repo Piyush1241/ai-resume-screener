@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Layout({ children }) {
-  const { user, logout, switchUser, DEV_USERS } = useAuth()
+  const { user, logout, switchUser, DEV_USERS, devUser } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -23,7 +23,7 @@ export default function Layout({ children }) {
     </Link>
   )
 
-  const devSelectValue = DEV_USERS.find(u => u._id === user?._id)?._id || DEV_USERS[0]._id
+  const devSelectValue = devUser?._id || DEV_USERS[0]._id
 
   return (
     <div className="min-h-screen text-white relative overflow-x-hidden"
