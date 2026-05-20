@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false))
   }, [])
 
-  const user = (import.meta.env.DEV && devUser) ? devUser : realUser
+  const user = devUser ?? realUser
 
   const login = async (email, password) => {
     const r = await axios.post('/api/auth/login', { email, password })
